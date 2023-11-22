@@ -1,27 +1,8 @@
 import pygame
 import random
 from typing import Tuple
-
-# Game loop
-# Load scenario
-# Update (tick) all agents n times
-# After n ticks repopulate, such that total number of agents equals m
-# Repeat p iterations
-
-# Scenarios
-# Closer to the right wall -> higher chance of death (change wall over time)
-# Death from overpopulation
-# THE NEXUS (TM) - death if inside 8x8 box, higher chance of death away from THE NEXUS (TM)
-
-# Inputs:
-# 1-2   Distance from walls
-# 3-7   Population density
-# 8-11  Population density change
-# 12    Distance to nearest
-# 13-14 Direction to nearest
-
-# Outputs:
-# 1-2   Move left/right and up/down
+import tensorflow as tf
+import numpy as np
 
 # Constants
 WIDTH, HEIGHT = SCREEN_SIZE = (800, 800)
@@ -50,17 +31,37 @@ rect = lambda x, y, w, h, col: pygame.draw.rect(screen, col, (x, y, w, h))
 
 clamp = lambda val, mn, mx: min(max(val, mn), mx)
 
+
+def build_model(input_size, output_size):
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Flatten(input_dim=input_size),
+        tf.keras.layers.Dense(30, activation='sigmoid'),
+        #tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Dense(output_size, activation='softmax')
+    ])
+
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+    return model
+
+
 class Agent:
     def __init__(self, coord : Coordinate) -> None:
         """..."""
         self.coords : Coordinate = coord
         self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.brain = build_model(2, 2)
     
     def tick(self) -> None:
-        self.coords = (
-            self.coords[0] + random.randint(-1, 1), 
-            self.coords[1] + random.randint(-1, 1)
-            )
+        #self.coords = (
+        #    self.coords[0] + random.randint(-1, 1), 
+        #    self.coords[1] + random.randint(-1, 1)
+        #    )
+
+        input_data = np.array(self.coords, dtype=float).reshape(1, -1)
+        predicted_movement = self.brain.predict(input_data)      
+
+        self.coords += predicted_movement.flatten()
 
     def show(self) -> None:
         rect(self.coords[0] * COL_SIZE, self.coords[1] * ROW_SIZE, *CELL_SIZE, self.color)

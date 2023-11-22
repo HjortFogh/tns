@@ -1,0 +1,20 @@
+# Game loop
+# Load scenario
+# Update (tick) all agents n times
+# After n ticks repopulate, such that total number of agents equals m
+# Repeat p iterations
+
+# Scenarios
+# Closer to the right wall -> higher chance of death (change wall over time)
+# Death from overpopulation
+# THE NEXUS (TM) - death if inside 8x8 box, higher chance of death away from THE NEXUS (TM)
+
+# Inputs:
+# 1-2   Distance from walls
+# 3-7   Population density
+# 8-11  Population density change
+# 12    Distance to nearest
+# 13-14 Direction to nearest
+
+# Outputs:
+# 1-2   Move left/right and up/down
