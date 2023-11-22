@@ -36,11 +36,11 @@ def build_model(input_size, output_size):
     model = tf.keras.models.Sequential([
         tf.keras.layers.Flatten(input_dim=input_size),
         tf.keras.layers.Dense(30, activation='sigmoid'),
-        #tf.keras.layers.Dropout(0.2),
-        tf.keras.layers.Dense(output_size, activation='softmax')
+        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Dense(output_size, activation='sigmoid')
     ])
 
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    #model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
     return model
 
@@ -67,7 +67,7 @@ class Agent:
         rect(self.coords[0] * COL_SIZE, self.coords[1] * ROW_SIZE, *CELL_SIZE, self.color)
 
 # Main game loop
-num_agents = clamp(100, 1, NUM_COLS * NUM_ROWS)
+num_agents = clamp(10, 1, NUM_COLS * NUM_ROWS)
 agents = [Agent(coord) for coord in random.sample([(i // NUM_COLS, i % NUM_COLS) for i in range(NUM_COLS * NUM_ROWS)], k=num_agents)]
 
 is_running = True
