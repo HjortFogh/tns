@@ -40,7 +40,7 @@ def build_model(input_size, output_size):
         tf.keras.layers.Dense(output_size, activation='sigmoid')
     ])
 
-    #model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
     return model
 
